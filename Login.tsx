@@ -93,7 +93,7 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email.value, password: password.value })
     };
-//
+
     fetch( websiteurl.value + '/wp-json/jwt-auth/v1/token', requestOptions)
       .then(async response => {
 
@@ -126,15 +126,15 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
         }
         storeUserData();
         setLoading(false);
-        console.log('userid ' + data.user_id);
+        //console.log('userid ' + data.user_id);
         navigation.navigate(MainRoutes.SettingsScreen);
       })
       .catch(error => {
         setLoading(false);
         // this.setState({ errorMessage: error.toString() });
         setErrortext(error.toString());
-        console.error('There was an error!', error);
-        return Promise.reject(error.toString());
+        //console.error('There was an error!', error);
+        return '';//Promise.reject(error.toString());
       });
 
   }

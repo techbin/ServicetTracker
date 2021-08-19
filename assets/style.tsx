@@ -60,8 +60,8 @@ module.exports = StyleSheet.create({
     alignSelf: "center",
     marginVertical: spacing[2],
     maxWidth: wp('30%'),
-    width: wp('43%'),
-    height: wp('43%'),
+    width: wp('30%'),
+    height: wp('30%'),
   },
   CONTENT: {
     fontFamily: typography.primary,
