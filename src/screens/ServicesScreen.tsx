@@ -104,7 +104,7 @@ const ServicesScreen = ({ navigation }: ServicesScreenProps): React.ReactElement
         loadUserData();
         setInterval(async () => {
             loadUserData();
-        }, 25000);
+        }, 20000);
 
     }, []);
 

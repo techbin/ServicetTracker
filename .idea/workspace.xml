@@ -26,7 +26,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/style.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/assets/style.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/screens/ServiceDetailsScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ServiceDetailsScreen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/ServicesScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/ServicesScreen.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

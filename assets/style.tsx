@@ -6,8 +6,8 @@ import { color, spacing, typography } from "../theme"
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
- } from 'react-native-responsive-screen'
- 
+} from 'react-native-responsive-screen'
+
 module.exports = StyleSheet.create({
   FULL: { flex: 1, backgroundColor: '#FFFFFF' },
   ROOT: {
@@ -30,12 +30,12 @@ module.exports = StyleSheet.create({
   },
   TEXT: {
     color: color.palette.black,
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     fontSize: 16
   },
   TEXTFIELD: {
     color: color.palette.orangeDarker,
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     fontSize: 18,
     width: wp('60%'),
     height: hp('3%'),
@@ -47,13 +47,23 @@ module.exports = StyleSheet.create({
   },
   FIELD_TEXT: {
     color: color.palette.orangeDarker,
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     fontSize: 22,
     borderWidth: 1,
     borderRadius: 61,
     borderColor: color.palette.orangeDarker
   },
-
+  clickhere: {
+    color: color.palette.lightGrey,
+    fontFamily: typography.secondary,
+    fontSize: 27,
+    borderWidth: 1,
+    borderRadius: 10,
+    width: wp('80%'),
+    marginLeft: -30,
+    padding: 10,
+    borderColor: color.palette.orangeDarker
+  },
   BOLD: { fontWeight: "bold" },
 
   BOWSER: {
@@ -64,7 +74,7 @@ module.exports = StyleSheet.create({
     height: wp('30%'),
   },
   CONTENT: {
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     color: color.palette.black,
     backgroundColor: '#FFFFFF',
     fontSize: 15,
@@ -76,7 +86,7 @@ module.exports = StyleSheet.create({
     paddingBottom: 2
   },
   FIELD_BORDER: {
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     color: color.palette.black,
     backgroundColor: '#FFFFFF',
     fontSize: 15,
@@ -93,7 +103,7 @@ module.exports = StyleSheet.create({
     paddingVertical: spacing[4],
     paddingHorizontal: spacing[4],
     backgroundColor: color.palette.orangeDarker,
-    width: wp('65%'), 
+    width: wp('65%'),
     borderRadius: 61,
   },
   CONTINUE_TEXT: {
@@ -104,7 +114,7 @@ module.exports = StyleSheet.create({
     textAlign: "center",
   },
   ERROR_TEXT: {
-    fontFamily: typography.primary,
+    fontFamily: typography.secondary,
     fontWeight: "bold",
     fontSize: 13,
     letterSpacing: 2,
