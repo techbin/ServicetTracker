@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, View, StyleSheet, ActivityIndicator, TouchableOpacity, Button, Image, FlatList, ViewStyle, TouchableWithoutFeedback, TextStyle } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from "@react-navigation/native"
@@ -20,52 +20,19 @@ const globalstyle = require('../../assets/style');
 const arrow = require("./icons/arrow-left.png")
 const logout = require("./icons/logout.png")
 
-
-const preset = {
-    /**
-     * No scrolling. Suitable for full-screen carousels and components
-     * which have built-in scrolling like FlatList.
-     */
-    fixed: {
-        outer: {
-            backgroundColor: color.background,
-            flex: 1,
-            height: "100%",
-        } as ViewStyle,
-        inner: {
-            justifyContent: "flex-start",
-            alignItems: "stretch",
-            height: "100%",
-            width: "100%",
-        } as ViewStyle,
-    },
-
-    /**
-     * Scrolls. Suitable for forms or other things requiring a keyboard.
-     *
-     * Pick this one if you don't know which one you want yet.
-     */
-    scroll: {
-        outer: {
-            backgroundColor: color.transparent,
-            flex: 1,
-            height: "100%",
-        } as ViewStyle,
-        inner: { justifyContent: "flex-start", alignItems: "stretch" } as ViewStyle,
-    },
-}
-const showDetails = (item: any) => {
-    const navigation = useNavigation();
-    navigation.navigate(MainRoutes.ServiceDetailsScreen, { item })
-}
-
 const ServicesScreen = ({ navigation }: ServicesScreenProps): React.ReactElement => {
+
 
     const [errortext, setErrortext] = useState('');
     const [userIdd, setUserIdd] = useState('');
     const [servicesRes, setServicesRes] = useState({});
     const [loading, setLoading] = useState(true);
 
+    // const showDetails = (item: any) => {
+    //     const navigation = useNavigation();
+    //     console.log('ROUTE' + item.id);
+    //     navigation.navigate(MainRoutes.ServiceDetailsScreen, { item })
+    // }
 
     const loadUserData = async () => {
 
@@ -79,9 +46,9 @@ const ServicesScreen = ({ navigation }: ServicesScreenProps): React.ReactElement
         const username = await loadString("username");
         const isCustomerProfile = await loadString("isCustomerProfile");
         setErrortext('Loading user configuration...')
-        setUserIdd(userid+'');
-        
-        console.log('user ' + userid + ',' + 'user1' + userIdd);
+        setUserIdd(userid + '');
+
+        //console.log('user ' + userid + ',' + 'user1' + userIdd);
         if (userid != '') {
             fetchServices(user_websiteurl, user_token, user_email, userid, isCustomerProfile);
         }
@@ -100,9 +67,9 @@ const ServicesScreen = ({ navigation }: ServicesScreenProps): React.ReactElement
         };
 
         const service_search_customer_or_technician = isCustomerProfile == 'customer' ? 'service_customer' : 'service_assigned_to';
-        console.log('isCustomerProfileEnabled ' + service_search_customer_or_technician + ', userid ' + userid);
+        //console.log('isCustomerProfileEnabled ' + service_search_customer_or_technician + ', userid ' + userid);
         const service_search_user_id = userid;
-user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
+        //user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
         fetch(user_websiteurl + '/wp-json/wp/v2/services/?orderby=title&order=asc&search=&meta_key=' + service_search_customer_or_technician + '&meta_value=' + service_search_user_id, requestOptions)
             .then(async response => {
                 setErrortext('Fetching services complete...listing');
@@ -133,7 +100,7 @@ user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
         setLoading(false);
     }
 
-    useEffect(() => { 
+    useEffect(() => {
         loadUserData();
         setInterval(async () => {
             loadUserData();
@@ -142,92 +109,101 @@ user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
     }, []);
 
     return (
-    <SafeAreaProvider style={globalstyle.CONTAINER}>
+        <SafeAreaProvider style={globalstyle.CONTAINER}>
+                <View style={globalstyle.FULL}>
 
-        <View style={globalstyle.FULL}>
+                    <View style={[globalstyle.ROOT, styles.header]}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <AutoImage source={arrow} />
+                        </TouchableOpacity>
+                        {/* <View style={LEFT} /> */}
+                        <View style={globalstyle.TITLE_MIDDLE}>
+                            <Text style={[globalstyle.TITLE]} >Services List</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => navigation.navigate(MainRoutes.LogoutScreen)}>
+                            <AutoImage source={logout} style={{ height: 50, resizeMode: "contain" }} />
+                        </TouchableOpacity>
+                        {/* <View style={RIGHT} /> */}
+                    </View>
+                    <View style={globalstyle.LOADER}>
+                        <ActivityIndicator animating={loading} color={color.primaryDarker} />
+                    </View>
 
-            <View style={[globalstyle.ROOT, styles.header]}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <AutoImage source={arrow} />
-                </TouchableOpacity>
-                {/* <View style={LEFT} /> */}
-                <View style={globalstyle.TITLE_MIDDLE}>
-                    <Text style={[globalstyle.TITLE]} >Services List</Text>
-                </View>
-                <TouchableOpacity onPress={() => navigation.navigate(MainRoutes.LogoutScreen)}>
-                    <AutoImage source={logout} style={{ height: 50, resizeMode: "contain" }} />
-                </TouchableOpacity>
-                {/* <View style={RIGHT} /> */}
-            </View>
-            <View style={globalstyle.LOADER}>
-                <ActivityIndicator animating={loading} color={color.primaryDarker} />
-            </View>
+                    <View style={globalstyle.CONTENT}>
+                        {errortext != '' ? (<Text style={globalstyle.ERROR_TEXT}> {errortext} </Text>) : null}
+                    </View>
+                    <FlatList
+                        contentContainerStyle={globalstyle.FLAT_LIST}
+                        data={servicesRes}
+                        keyExtractor={(item) => String(item.id)}
+                        renderItem={({ item }) => (
+                            <TouchableWithoutFeedback onPress={() => navigation.navigate(MainRoutes.ServiceDetailsScreen, { item })}>
 
-            <View style={globalstyle.CONTENT}>
-                {errortext != '' ? (<Text style={globalstyle.ERROR_TEXT}> {errortext} </Text>) : null}
-            </View>
-            <FlatList
-                contentContainerStyle={globalstyle.FLAT_LIST}
-                data={servicesRes}
-                keyExtractor={(item) => String(item.id)}
-                renderItem={({ item }) => (
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate(MainRoutes.ServiceDetailsScreen, { item })}>
-
-                        <View style={styles.mainCardView}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <View style={styles.subCardView}>
-                                    <Image
-                                        source={serviceImage}
-                                        resizeMode="contain"
-                                        style={{
-                                            borderRadius: 25,
-                                            height: 50,
-                                            width: 50,
-                                        }}
-                                    />
-                                </View>
-                                <View style={{ marginLeft: 12 }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 14,
-                                            color: '#000000',
-                                            fontWeight: 'bold',
-                                            textTransform: 'capitalize',
-                                        }}>
-                                        {item.title.rendered}
-                                    </Text>
-                                    <View
-                                        style={{
-                                            marginTop: 4,
-                                            borderWidth: 0,
-                                            width: '100%',
-                                        }}>
-                                        <Text
-                                            style={{
-                                                color: '#000000',
-                                                fontSize: 12,
-                                            }}>
-                                            Service Date and Time: {item.custom_fields.service_booked_on_datetime}
-                                        </Text>
+                                <View style={styles.mainCardView}>
+                                    <View style={{ flexDirection: 'row'}}>
+                                        <View style={styles.subCardView}>
+                                            <Image
+                                                source={serviceImage}
+                                                resizeMode="contain"
+                                                style={{
+                                                    borderRadius: 25,
+                                                    height: 50,
+                                                    width: 50,
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={{ marginLeft: 12 }}>
+                                            <Text
+                                                style={{
+                                                    fontSize: 14,
+                                                    color: '#000000',
+                                                    fontWeight: 'bold',
+                                                    textTransform: 'capitalize',
+                                                    textAlign: 'left' 
+                                                }}>
+                                                {item.title.rendered.substring(0, 35) + '...'}
+                                            </Text>
+                                            <View
+                                                style={{
+                                                    marginTop: 4,
+                                                    borderWidth: 0,
+                                                    width: '100%',
+                                                }}>
+                                                <Text
+                                                    style={{
+                                                        color: '#000000',
+                                                        fontSize: 12,
+                                                        textAlign: 'left' 
+                                                    }}>
+                                                    Service Booking Date and Time:
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        color: '#000000',
+                                                        fontSize: 12,
+                                                        textAlign: 'left' 
+                                                    }}>
+                                                    {item.custom_fields.service_booked_on_datetime}
+                                                </Text>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    height: 25,
+                                                    backgroundColor: color.storybookDarkBg,
+                                                    borderWidth: 0,
+                                                    width: '65%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderRadius: 50,
+                                                    margin: 10
+                                                }}>
+                                                <Text style={{ fontSize: 10, color: '#FFFFFF' }}>
+                                                    {item.custom_fields.service_is_work_complete}
+                                                </Text>
+                                            </View>
+                                        </View>
                                     </View>
-                                    <View
-                                        style={{
-                                            height: 25,
-                                            backgroundColor: color.storybookDarkBg,
-                                            borderWidth: 0,
-                                            width: '65%',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            borderRadius: 50,
-                                            margin: 10
-                                        }}>
-                                        <Text style={{ fontSize: 10, color: '#FFFFFF' }}>
-                                            {item.custom_fields.service_is_work_complete}
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View
+                                    {/* <View
                                 style={{
                                     height: 25,
                                     backgroundColor: '#FF0000',
@@ -249,15 +225,14 @@ user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
                                     }}
                                 />
 
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                )}
-            />
+                            </View> */}
+                                </View>
+                            </TouchableWithoutFeedback>
+                        )}
+                    />
 
-        </View>
-
-    </SafeAreaProvider>
+                </View>
+        </SafeAreaProvider>
     )
 }
 
@@ -265,10 +240,10 @@ const styles = StyleSheet.create({
     header: {
 
     },
-    mainCardView : {
+    mainCardView: {
         height: 110,
-        alignItems: 'center',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // justifyContent: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         shadowColor: '#C6C6C6',
@@ -277,15 +252,16 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 8,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 16,
-        paddingRight: 14,
-        marginTop: 6,
-        marginBottom: 6,
-        marginLeft: 16,
-        marginRight: 16,
-      },
-      subCardView: {
+        // justifyContent: 'space-between',
+        paddingTop: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    subCardView: {
         height: 50,
         width: 50,
         borderRadius: 25,
@@ -295,14 +271,14 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         alignItems: 'center',
         justifyContent: 'center',
-      },
-      ARROW:{
+    },
+    ARROW: {
         alignSelf: "center",
         marginVertical: spacing[5],
         maxWidth: "100%",
         width: 30,
         height: 30,
-      }
+    }
 })
 
 export default ServicesScreen

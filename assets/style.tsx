@@ -3,7 +3,11 @@ import { StyleSheet } from 'react-native';
 // import { ScrollView, Button, TouchableOpacity, TextInput, View, Image, Text, ViewStyle, Switch, TextStyle, ActivityIndicator, ImageStyle, SafeAreaView }, from "react-native"
 import { palette } from "../theme/palette"
 import { color, spacing, typography } from "../theme"
-
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+ } from 'react-native-responsive-screen'
+ 
 module.exports = StyleSheet.create({
   FULL: { flex: 1, backgroundColor: '#FFFFFF' },
   ROOT: {
@@ -17,8 +21,8 @@ module.exports = StyleSheet.create({
   },
   TITLE: { textAlign: "center", fontSize: 18 },
   TITLE_MIDDLE: { flex: 1, justifyContent: "center" },
-  LEFT: { width: 32 },
-  RIGHT: { width: 32 },
+  LEFT: { width: wp('3%') },
+  RIGHT: { width: wp('3%') },
   CONTAINER: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: spacing[4],
@@ -33,11 +37,14 @@ module.exports = StyleSheet.create({
     color: color.palette.orangeDarker,
     fontFamily: typography.primary,
     fontSize: 18,
-    width: 300,
-    height: 30,
+    width: wp('60%'),
+    height: hp('3%'),
     margin: 10
   },
-
+  STATUS_COLOR: {
+    backgroundColor: color.palette.lightGrey,
+    color: color.palette.white
+  },
   FIELD_TEXT: {
     color: color.palette.orangeDarker,
     fontFamily: typography.primary,
@@ -52,16 +59,16 @@ module.exports = StyleSheet.create({
   BOWSER: {
     alignSelf: "center",
     marginVertical: spacing[2],
-    maxWidth: "100%",
-    width: 103,
-    height: 150,
+    maxWidth: wp('30%'),
+    width: wp('43%'),
+    height: wp('43%'),
   },
   CONTENT: {
     fontFamily: typography.primary,
     color: color.palette.black,
     backgroundColor: '#FFFFFF',
     fontSize: 15,
-    lineHeight: 20,
+    lineHeight: hp('13%'),
     marginBottom: spacing[4],
     borderColor: color.palette.lightGrey,
     justifyContent: 'center',
@@ -73,11 +80,11 @@ module.exports = StyleSheet.create({
     color: color.palette.black,
     backgroundColor: '#FFFFFF',
     fontSize: 15,
-    lineHeight: 22,
+    lineHeight: hp('13%'),
     marginBottom: spacing[4],
     borderColor: color.palette.lightGrey,
     borderWidth: 1,
-    borderRadius: 61,
+    // borderRadius: 61,
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 5
@@ -86,6 +93,7 @@ module.exports = StyleSheet.create({
     paddingVertical: spacing[4],
     paddingHorizontal: spacing[4],
     backgroundColor: color.palette.orangeDarker,
+    width: wp('65%'), 
     borderRadius: 61,
   },
   CONTINUE_TEXT: {
@@ -107,6 +115,7 @@ module.exports = StyleSheet.create({
   FOOTER_CONTENT: {
     paddingVertical: spacing[4],
     paddingHorizontal: spacing[4],
+    marginLeft: 40
   },
 
   LOADER: {

@@ -10,7 +10,11 @@ import { MainRoutes } from './src/routing/routes'
 import { palette } from "./theme/palette"
 import { color, spacing, typography } from "./theme"
 import { load, loadString, save, saveString, clear, remove } from "./utils/storage"
-
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+ } from 'react-native-responsive-screen'
+ 
 const globalstyle = require('./assets/style');
 const logo = require("./assets/images/stlogo.png")
 
@@ -89,8 +93,8 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email.value, password: password.value })
     };
-//websiteurl.value +
-    fetch(  'https://staging.bucklit.com.au/service-tracking/wordpress/wp-json/jwt-auth/v1/token', requestOptions)
+//
+    fetch( websiteurl.value + '/wp-json/jwt-auth/v1/token', requestOptions)
       .then(async response => {
 
         const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -101,8 +105,8 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
           setLoading(false);
           // get error message from body or default to response status
           let error = (data && data.message) || response.status;
-          //const regex = /(<([^>]+)>)/ig;
-          //error = error.replace(regex, '');
+          const regex = /(<([^>]+)>)/ig;
+          error = error.replace(regex, '');
           setErrortext(error);
           return '';//Promise.reject(error);
         }
@@ -135,50 +139,10 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
 
   }
 
-  const preset = {
-    /**
-     * No scrolling. Suitable for full-screen carousels and components
-     * which have built-in scrolling like FlatList.
-     */
-    fixed: {
-      outer: {
-        backgroundColor: color.background,
-        flex: 1,
-        height: "100%",
-      } as ViewStyle,
-      inner: {
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        height: "100%",
-        width: "100%",
-      } as ViewStyle,
-    },
-
-    /**
-     * Scrolls. Suitable for forms or other things requiring a keyboard.
-     *
-     * Pick this one if you don't know which one you want yet.
-     */
-    scroll: {
-      outer: {
-        backgroundColor: color.transparent,
-        flex: 1,
-        height: "100%",
-      } as ViewStyle,
-      inner: { justifyContent: "flex-start", alignItems: "stretch" } as ViewStyle,
-    },
-  }
-
-  const backgroundStyle = { backgroundColor: color.transparent };
-  const insetStyle = { paddingTop: 10 }
-  const style = {}
-
   return (
     <SafeAreaProvider style={globalstyle.CONTAINER}>
       <ScrollView
-        style={[preset.scroll.outer]}
-        contentContainerStyle={[preset.fixed.inner, style]}
-        keyboardShouldPersistTaps={"handled"}
+        contentContainerStyle={{ flexGrow: 1 }}
       >
         <View style={globalstyle.FULL}>
           {/* <View style={CONTENT}>
@@ -193,7 +157,7 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
           <View style={globalstyle.CONTENT}>
             <View style={globalstyle.FIELD_TEXT}>
               <TextInput
-                placeholder={'ENTER WEBSITE URL'}
+                placeholder={'WEBSITE URL'}
                 placeholderTextColor={color.palette.black}
                 underlineColorAndroid={color.transparent}
                 style={globalstyle.TEXTFIELD}
@@ -205,9 +169,9 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
           </View>
 
 
-          <View style={globalstyle.CONTENT}>
+          <View style={globalstyle.FIELD_BORDER}>
             <Text style={globalstyle.TEXT}>
-              {'SELECT PROFILE OPTION'}
+              {'SELECT PROFILE'}
             </Text>
             <Text style={globalstyle.TEXT}>
               {'Customer or Technician/Service-Person'}
@@ -257,13 +221,13 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
             </View>
           </View>
 
-          <SafeAreaView style={globalstyle.FOOTER}>
+        
             <View style={globalstyle.FOOTER_CONTENT}>
               <TouchableOpacity style={globalstyle.CONTINUE} onPress={nextScreen}>
                 <Text style={globalstyle.CONTINUE_TEXT}>LOGIN</Text>
               </TouchableOpacity>
             </View>
-          </SafeAreaView>
+    
 
           {errortext != '' ? (
             <Text style={globalstyle.ERROR_TEXT}> {errortext} </Text>
@@ -272,6 +236,9 @@ const Login = ({ navigation }: LoginScreenProps): React.ReactElement => {
           <View style={globalstyle.LOADER}>
             <ActivityIndicator animating={loading} color={color.primaryDarker} />
           </View>
+
+
+
           <StatusBar />
         </View>
       </ScrollView>

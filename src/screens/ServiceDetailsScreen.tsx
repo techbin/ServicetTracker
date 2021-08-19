@@ -7,45 +7,18 @@ import { MainRoutes } from '../routing/routes'
 import { AutoImage } from "../../components/auto-image/auto-image"
 import { color, spacing } from "../../theme"
 import { load, loadString, save, saveString, clear, remove } from "../../utils/storage"
+
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
+
+
 const globalstyle = require('../../assets/style');
 //const navigation = useNavigation();
 const arrow = require("./icons/arrow-left.png")
 const logout = require("./icons/logout.png")
 
-
-const preset = {
-    /**
-     * No scrolling. Suitable for full-screen carousels and components
-     * which have built-in scrolling like FlatList.
-     */
-    fixed: {
-        outer: {
-            backgroundColor: color.background,
-            flex: 1,
-            height: "100%",
-        } as ViewStyle,
-        inner: {
-            justifyContent: "flex-start",
-            alignItems: "stretch",
-            height: "100%",
-            width: "100%",
-        } as ViewStyle,
-    },
-
-    /**
-     * Scrolls. Suitable for forms or other things requiring a keyboard.
-     *
-     * Pick this one if you don't know which one you want yet.
-     */
-    scroll: {
-        outer: {
-            backgroundColor: color.transparent,
-            flex: 1,
-            height: "100%",
-        } as ViewStyle,
-        inner: { justifyContent: "flex-start", alignItems: "stretch" } as ViewStyle,
-    },
-}
 
 type ServiceDetailsProps = {
     navigation: MainNavigationProp<MainRoutes.ServiceDetailsScreen>
@@ -60,23 +33,15 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
     const [selectedId, setSelectedId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [avatar, setAvatar] = useState('avatar.png');
-    
 
-    const description = '';
+    const route = useRoute();
+    const routeItem = route.params;
+    //console.log('ROUTE SD' + routeItem.item.id);
 
-    useEffect(() => { 
-//routeItem.item.custom_fields.service_is_work_complete
-        const route = useRoute();
-        const routeItem = route.params;
-        console.log(routeItem.item.id);
-    
-    
-        const regex = /(<([^>]+)>)/ig;
-        const description = routeItem.item.content.rendered.replace(regex, '');
-    
+    const regex = /(<([^>]+)>)/ig;
+    const description = routeItem.item.content.rendered.replace(regex, '');
 
-
-    }, []);
+    //routeItem.item.custom_fields.service_is_work_complete
     /* 
      Description: API update status and notes
      
@@ -91,9 +56,9 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
             // const user_avatar = await loadString("user_avatar");
             // setAvatar(user_avatar);
 
-            console.log(user_token);
-            const user_websiteurl = await loadString("user_websiteurl");
-            console.log(user_websiteurl);
+            //console.log(user_token);
+            let user_websiteurl = await loadString("user_websiteurl");
+            //console.log(user_websiteurl);
             //"{siteurl}/wp-json/service/v2/update";
             const requestOptions = {
                 method: 'POST',
@@ -103,11 +68,12 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
                 },
                 body: JSON.stringify({ post_id: post_id, status: status, notes: additionalNotes.value })
             };
+            //user_websiteurl = 'https://staging.bucklit.com.au/service-tracking/wordpress/';
             return fetch(user_websiteurl + '/wp-json/service/v2/update', requestOptions)
                 .then((response) => response.json())
                 .then((responseJson) => {
                     setLoading(false);
-                    console.log(responseJson);
+                    //console.log(responseJson);
                     //show Model - with updated status
                     //showAlert();
                     navigation.navigate(MainRoutes.ServicesScreen)
@@ -116,7 +82,7 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
                     setLoading(false);
                     //setErrorState({ errorMessage: error.toString() });
                     setErrortext(error.toString());
-                    console.error('There was an error!', error);
+                    //console.error('There was an error!', error);
                     return '';
                 });
         }
@@ -140,11 +106,9 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
     return (
 
         <SafeAreaProvider style={globalstyle.CONTAINER}>
-            {/* <ScrollView
-                style={[preset.scroll.outer]}
-                contentContainerStyle={[preset.fixed.inner, globalstyle.style]}
-                keyboardShouldPersistTaps={"handled"}
-            > */}
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+            >
                 <View style={globalstyle.FULL}>
 
                     <View style={[globalstyle.ROOT, styles.page]}>
@@ -161,15 +125,8 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
                         {/* <View style={RIGHT} /> */}
                     </View>
 
-
-                    {errortext != '' ? (
-                        <Text style={globalstyle.ERROR_TEXT}> {errortext} </Text>
-
-                    ) : null}
                     <View >
-                        <View style={globalstyle.LOADER}>
-                            <ActivityIndicator animating={loading} color={color.primaryDarker} />
-                        </View>
+
 
 
                         <View style={globalstyle.CONTENT}>
@@ -199,10 +156,10 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
                             <Text style={globalstyle.TEXT}>
                                 <View
                                     style={{
-                                        height: 35,
-                                        backgroundColor: color.palette.orangeDarker,
+                                        height: hp('5%'),
+                                        width: wp('100%'),
+                                        backgroundColor: color.palette.lightGrey,
                                         borderWidth: 0,
-                                        width: '100%',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         borderRadius: 0,
@@ -217,8 +174,7 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
 
 
 
-
-                        <View style={globalstyle.CONTENT}>
+                        <View style={globalstyle.FIELD_BORDER}>
                             <View style={{ flex: 1 }}>
                                 <Text style={[{ flexWrap: 'wrap', lineHeight: 18, textAlign: 'left', color: '#000' }]}>
                                     {description}
@@ -226,72 +182,105 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
                             </View>
                         </View>
 
+                        <View style={globalstyle.FIELD_BORDER}>
 
-
-
-                        <View style={globalstyle.CONTENT}>
-                            <Text style={globalstyle.TEXT}>
-                                <Image
-                                    style={styles.userImage}
-                                    source={require('./icons/customer.png')}
-                                />
-                                <Text style={styles.userCityText}>
-                                    CUSTOMER
-                                </Text>
-                                <Text style={styles.userCityText}>
-                                    {routeItem.item.custom_fields.service_customer.display_name}
-                                </Text>
-                                <Text style={styles.userCityText}>
-                                    {routeItem.item.custom_fields.service_customer.first_name} {routeItem.item.custom_fields.service_customer.last_name}
-                                </Text>
-                            </Text>
-                        </View>
-
-
-
-                        <View style={globalstyle.CONTENT}>
-                            <Text style={globalstyle.TEXT}>
-                                <Text style={styles.userCityText}>
-                                    {routeItem.item.custom_fields.customer_service_phone}
-                                </Text>
-                            </Text>
-                        </View>
-
-
-
-                        <View style={globalstyle.CONTENT}>
-                            <Text style={globalstyle.TEXT}>
-                                <Text style={styles.userCityText}>
-                                    {routeItem.item.custom_fields.customer_service_address}
-                                </Text>
-                            </Text>
-                        </View>
-
-
-
-                        <View style={globalstyle.CONTENT}>
-                            <Text style={globalstyle.TEXT}>
-                                <View style={{ flex: 1 }}>
-                                    <Image
-                                        style={styles.userImage}
-                                        source={require('./icons/technician.png')}
-                                    />
-                                    <Text style={styles.userCityText}>
-                                        TECHNICIAN
-                                    </Text>
-                                    <Text style={styles.userCityText}>
-                                        {routeItem.item.custom_fields.service_technician.first_name} {routeItem.item.custom_fields.service_technician.last_name}
+                            <View style={globalstyle.CONTENT}>
+                                <View
+                                    style={{
+                                        height: hp('8%'),
+                                        width: wp('100%'),
+                                        backgroundColor: color.palette.lightGrey,
+                                        borderWidth: 0,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: 0,
+                                        margin: 0
+                                    }}>
+                                    <Text style={{ fontSize: 14, color: '#FFFFFF' }}>
+                                        <Image
+                                            style={styles.userImage}
+                                            source={require('./icons/customer.png')}
+                                        />
+                                        <Text style={globalstyle.TEXT}>
+                                            CUSTOMER
+                                        </Text>
                                     </Text>
                                 </View>
-                                <View style={{ flex: 1 }}>
+                            </View>
+                            <View style={globalstyle.CONTENT}>
+                                <Text style={globalstyle.TEXT}>
                                     <Text style={styles.userCityText}>
-                                        {routeItem.item.custom_fields.technician_service_phone}
+                                        {routeItem.item.custom_fields.service_customer.display_name}
                                     </Text>
-                                </View>
-                            </Text>
+                                    <Text style={styles.userCityText}>
+                                        - {routeItem.item.custom_fields.service_customer.first_name} {routeItem.item.custom_fields.service_customer.last_name}
+                                    </Text>
+                                </Text>
+                            </View>
+
+
+
+                            <View style={globalstyle.CONTENT}>
+                                <Text style={globalstyle.TEXT}>
+                                    <Text style={styles.userCityText}>
+                                        {routeItem.item.custom_fields.customer_service_phone}
+                                    </Text>
+                                </Text>
+                            </View>
+
+
+
+                            <View style={globalstyle.CONTENT}>
+                                <Text style={globalstyle.TEXT}>
+                                    <Text style={styles.userCityText}>
+                                        {routeItem.item.custom_fields.customer_service_address}
+                                    </Text>
+                                </Text>
+                            </View>
+
                         </View>
 
+                        <View style={globalstyle.FIELD_BORDER}>
+                            <View style={globalstyle.CONTENT}>
 
+                                <View
+                                    style={{
+                                        height: hp('8%'),
+                                        width: wp('100%'),
+                                        backgroundColor: color.palette.lightGrey,
+                                        borderWidth: 0,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: 0,
+                                        margin: 0
+                                    }}>
+                                    <Text style={{ fontSize: 14, color: '#FFFFFF' }}>
+                                        <Image
+                                            style={styles.userImage}
+                                            source={require('./icons/technician.png')}
+                                        />
+                                        <Text style={globalstyle.TEXT}>
+                                            TECHNICIAN
+                                        </Text>
+                                    </Text>
+                                </View>
+
+
+                                <View style={globalstyle.CONTENT}>
+                                    <Text style={globalstyle.TEXT}>
+                                        <Text style={styles.userCityText}>
+                                            {routeItem.item.custom_fields.service_technician.first_name} {routeItem.item.custom_fields.service_technician.last_name}
+                                        </Text>
+                                    </Text>
+                                    <Text style={globalstyle.TEXT}>
+                                        <Text style={styles.userCityText}>
+                                            {routeItem.item.custom_fields.technician_service_phone}
+                                        </Text>
+                                    </Text>
+                                </View>
+
+                            </View>
+                        </View>
 
 
 
@@ -299,18 +288,31 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
 
                         <View style={globalstyle.CONTENT}>
                             <View style={{ flex: 1 }}>
+                                {errortext != '' ? (
+                                    <Text style={globalstyle.ERROR_TEXT}> {errortext} </Text>
+
+                                ) : null}
+                                <View style={globalstyle.LOADER}>
+                                    <ActivityIndicator animating={loading} color={color.primaryDarker} />
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={globalstyle.CONTENT}>
+                            <View style={{ flex: 1 }}>
                                 <Text style={styles.userCityText}>
-                                    Update Service Status or Notes
+                                    CHANGE/UPDATE SERVICE STATUS
                                 </Text>
                                 <FlatList
-                                    contentContainerStyle={globalstyle.TEXTFIELD_COLOR}
+                                    scrollEnabled={false}
+                                    contentContainerStyle={globalstyle.STATUS_COLOR}
                                     data={[{ key: 'PENDING' }, { key: 'ASSIGNED' }, { key: 'INTRANSIT' }, { key: 'INCOMPLETE' }, { key: 'COMPLETE' }]}
                                     renderItem={({ item }) => (
                                         <TouchableWithoutFeedback>
                                             <View style={globalstyle.TEXT}>
                                                 <Text
                                                     onPress={() => updateServiceStatus(routeItem.item.id, item.key)}
-                                                    style={{ backgroundColor: selectDefaultItem(item.key) }} >
+                                                    style={{ backgroundColor: selectDefaultItem(item.key), color: color.palette.white, padding: 3 }} >
                                                     {item.key}
                                                 </Text>
                                             </View>
@@ -323,44 +325,47 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
 
 
 
+                        <View style={globalstyle.FIELD_BORDER}>
+                            <View style={globalstyle.CONTENT}>
+                                <Text style={styles.userCityText}>
+                                    UPDATE ADDITIONAL NOTES
+                                </Text>
+                                <TextInput
+                                    placeholder='Additional Notes'
+                                    placeholderTextColor={color.palette.black}
+                                    underlineColorAndroid={color.transparent}
 
-                        <View style={globalstyle.CONTENT}>
-                            <TextInput
-                                placeholder='Additional Notes'
-                                placeholderTextColor={color.palette.lighterGrey}
-                                underlineColorAndroid={color.transparent}
+                                    style={{
+                                        flexDirection: 'row',
+                                        paddingTop: 4,
+                                        borderWidth: 1,
+                                        borderColor: '#000',
+                                        color: '#000',
+                                        height: 100,
+                                        width: wp('70%'),
+                                        backgroundColor: color.palette.offWhite,
+                                        justifyContent: 'flex-start'
+                                    }}
+                                    returnKeyType="next"
+                                    value={additionalNotes.value}
+                                    onChangeText={text => setAdditionalNotes({ value: text, error: '' })}
+                                    autoCapitalize="none"
+                                />
+                            </View>
 
-                                style={{
-                                    flexDirection: 'row',
-                                    paddingTop: 20,
-                                    borderWidth: 1,
-                                    borderColor: '#000',
-                                    color: '#000',
-                                    height: 100,
-                                    width: 400,
-                                    backgroundColor: 'darkgrey',
-                                    justifyContent: 'flex-end'
-                                }}
-                                returnKeyType="next"
-                                value={additionalNotes.value}
-                                onChangeText={text => setAdditionalNotes({ value: text, error: '' })}
-                                autoCapitalize="none"
-                            />
+
+
+                            <View style={globalstyle.CONTENT}>
+                                <TouchableOpacity style={styles.updateStatus} onPress={() => updateStatus(routeItem.item.id, '')}>
+                                    <Text style={globalstyle.CONTINUE_TEXT}>Update Notes</Text>
+                                </TouchableOpacity>
+                            </View>
+
                         </View>
-
-
-
-                        <View style={globalstyle.CONTENT}>
-                            <TouchableOpacity onPress={() => updateStatus(routeItem.item.id, '')}>
-                                <Text>Update Notes</Text>
-                            </TouchableOpacity>
-                        </View>
-
                     </View>
 
-
                 </View>
-            {/* </ScrollView> */}
+            </ScrollView>
         </SafeAreaProvider >
     )
 }
@@ -368,7 +373,14 @@ const ServiceDetailsScreen = ({ navigation }: ServiceDetailsProps): React.ReactE
 const styles = StyleSheet.create({
     page: {
     },
-
+    updateStatus: {
+        paddingVertical: spacing[4],
+        paddingHorizontal: spacing[4],
+        backgroundColor: color.palette.orangeDarker,
+        width: wp('65%'),
+        borderRadius: 61,
+        marginLeft: 10,
+    },
     cardContainer: {
         backgroundColor: color.palette.offWhite,
         color: '#000',

@@ -6,6 +6,11 @@ import { MainRoutes } from '../routing/routes'
 import { AutoImage } from "../../components/auto-image/auto-image"
 import { color, spacing } from "../../theme"
 const globalstyle = require('../../assets/style');
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
+
 
 type SettingsScreenProps = {
     navigation: MainNavigationProp<MainRoutes.SettingsScreen>
@@ -55,9 +60,7 @@ const SettingsScreen = ({ navigation }: SettingsScreenProps): React.ReactElement
 
     <SafeAreaProvider style={globalstyle.CONTAINER}>
         <ScrollView
-            style={[preset.scroll.outer]}
-            contentContainerStyle={[preset.fixed.inner, globalstyle.style]}
-            keyboardShouldPersistTaps={"handled"}
+            contentContainerStyle={{ flexGrow: 1 }}
         >
             <View style={globalstyle.FULL}>
 
@@ -78,22 +81,34 @@ const SettingsScreen = ({ navigation }: SettingsScreenProps): React.ReactElement
 
                 <View style={styles.page}>
                     <View style={globalstyle.CONTENT}>
-                        <Text style={globalstyle.TEXT}>
-                            <Text>WELCOME</Text>
-                        </Text>
+                        <AutoImage source={require("./icons/avatar.png")} style={styles.profile} />
                     </View>
-                    <View style={globalstyle.CONTENT}>
-                        <Text style={globalstyle.TEXT}>
-                            <Button title="Services" onPress={() => navigation.navigate(MainRoutes.ServicesScreen)} />
-                        </Text>
-                    </View>
-                    <View style={globalstyle.CONTENT}>
-                        <Text style={globalstyle.TEXT}>
-                        <Button title="Logout" onPress={() => navigation.navigate(MainRoutes.LogoutScreen)} />
-                    </Text>
                 </View>
-                {/* <Button title="Service Details Screen" onPress={() => navigation.navigate(MainRoutes.ServiceDetailsScreen)} /> */}
-            </View>
+
+                <View style={globalstyle.FIELD_BORDER}>
+                    <View style={globalstyle.CONTENT}>
+                        <Text style={globalstyle.BOLD}>
+                            <Text>Hello! Welcome to Service Tracker.</Text>
+                        </Text>
+                        <Text style={globalstyle.TEXT}>
+                            <Text>Click on services button to access the services assigned.</Text>
+                        </Text>
+                    </View>
+
+
+                    <View style={globalstyle.FOOTER_CONTENT}>
+                        <TouchableOpacity style={globalstyle.CONTINUE} onPress={() => navigation.navigate(MainRoutes.ServicesScreen)}>
+                            <Text style={globalstyle.CONTINUE_TEXT}>SERVICES</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={globalstyle.FOOTER_CONTENT}>
+                        <TouchableOpacity style={globalstyle.CONTINUE} onPress={() => navigation.navigate(MainRoutes.LogoutScreen)}>
+                            <Text style={globalstyle.CONTINUE_TEXT}>LOGOUT</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {/* <Button title="Service Details Screen" onPress={() => navigation.navigate(MainRoutes.ServiceDetailsScreen)} /> */}
+                </View>
 
 
             </View>
@@ -109,6 +124,15 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         // justifyContent: 'center',
     },
+    profile: {
+        width: wp('100%'), height: hp('43%'),
+        backgroundColor: '#FF0000',
+        borderWidth: 2,
+        borderRadius: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
+    }
 })
 
 export default SettingsScreen
